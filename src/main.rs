@@ -10,60 +10,13 @@ fn main() {
     match username.is_sql_safe() {
         Ok(name) => println!("[{}] is safe", name),
         Err(err) => {
-            println!("Error: [{}]", err);
-            println!("Error: [{}]", err.description());
+            println!("Error: {}", err);
+            println!("Error: {}", err.description());
         },
     };
 }
 
 type Result<T> = std::result::Result<T, Box<error::Error>>;
-
-#[derive(Debug)]
-enum LoginError {
-    EmptyUsername,
-    InvalidUsername,
-    EmptyPassword,
-    InvalidPassword,
-}
-
-impl fmt::Display for LoginError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            LoginError::EmptyUsername =>
-                write!(f, "please provide a non-empty username"),
-            LoginError::InvalidUsername =>
-                write!(f, "please provide a valid username"),
-            LoginError::EmptyPassword =>
-                write!(f, "please provide a non-empty password"),
-            LoginError::InvalidPassword =>
-                write!(f, "please provide a valid password"),
-        }
-    }
-}
-
-impl error::Error for LoginError {
-    fn description(&self) -> &str {
-        match *self {
-            LoginError::EmptyUsername =>
-                "empty username not allowed",
-            LoginError::InvalidUsername =>
-                "invalid username not allowed",
-            LoginError::EmptyPassword =>
-                "empty password not allowed",
-            LoginError::InvalidPassword =>
-                "invalid password not allowed",
-        }
-    }
-
-    fn cause(&self) -> Option<&error::Error> {
-        match *self {
-            LoginError::EmptyUsername => None,
-            LoginError::InvalidUsername => None,
-            LoginError::EmptyPassword => None,
-            LoginError::InvalidPassword => None,
-        }
-    }
-}
 
 #[derive(Debug)]
 enum SqlError {
@@ -74,7 +27,7 @@ impl fmt::Display for SqlError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             SqlError::UnsafeCharacters(ref msg) =>
-                write!(f, "found unsafe sql characters in sql string [{}]", &msg),
+                write!(f, "found unsafe sql characters in sql string `{}\'", &msg),
         }
     }
 }
@@ -82,17 +35,9 @@ impl fmt::Display for SqlError {
 impl error::Error for SqlError {
     fn description<'a>(&'a self) -> &'a str {
         match *self {
-            SqlError::UnsafeCharacters(_) =>
-                "sql syntax not allowed",
+            SqlError::UnsafeCharacters(_) => "sql syntax not allowed",
         }
     }
-
-    // fn detail(&self) -> Option<String> {
-    //     match *self {
-    //         sqlError::UnsafeCharacters(msg) => Some(format!("sql syntax not allowed, found {}", msg)),
-    //         _ => None,
-    //     }
-    // }
 
     fn cause(&self) -> Option<&error::Error> {
         match *self {
@@ -103,29 +48,80 @@ impl error::Error for SqlError {
 
 trait SqlSafe {
     fn is_sql_safe(&self) -> Result<&str>;
-    // fn from_str(s: &str) -> Result<Self, Self::Err>;
 }
 
 lazy_static! {
     static ref SQL_CHECK: Regex =
-        Regex::new(r"([^\d\w\s@\.-]+)").expect("FAULT  db/mod.rs string_is_safe()");
+        Regex::new(r"([^\d\w\s@\.-]+)").expect("FAULT  SQL_CHECK");
 }
 
 impl SqlSafe for str {
     fn is_sql_safe<'a>(&'a self) -> Result<&'a str> {
-
-        // TODO: Add regex check for any non alphanumeric characters
-        // let invalid_sql_string = Regex::new(r"([^\d\w\s@\.-]+)").expect("FAULT  db/mod.rs string_is_safe()");
         if Regex::is_match(&SQL_CHECK, self) {
-            // let cap = invalid_sql_string.captures(self).expect("FAULT  db/mod.rs string_is_safe()");
-            let cap = SQL_CHECK.captures(self).unwrap();
-            println!("UNSAFE SQL STRING [{}]", self);
+            let cap = SQL_CHECK.captures(self).expect("FAULT  SQL_CHECK");
             Err(Box::new(SqlError::UnsafeCharacters(cap[1].to_string())))
         } else {
             Ok(self)
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+// #[derive(Debug)]
+// enum LoginError {
+//     EmptyUsername,
+//     InvalidUsername,
+//     EmptyPassword,
+//     InvalidPassword,
+// }
+//
+// impl fmt::Display for LoginError {
+//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//         match *self {
+//             LoginError::EmptyUsername =>
+//                 write!(f, "please provide a non-empty username"),
+//             LoginError::InvalidUsername =>
+//                 write!(f, "please provide a valid username"),
+//             LoginError::EmptyPassword =>
+//                 write!(f, "please provide a non-empty password"),
+//             LoginError::InvalidPassword =>
+//                 write!(f, "please provide a valid password"),
+//         }
+//     }
+// }
+//
+// impl error::Error for LoginError {
+//     fn description(&self) -> &str {
+//         match *self {
+//             LoginError::EmptyUsername =>
+//                 "empty username not allowed",
+//             LoginError::InvalidUsername =>
+//                 "invalid username not allowed",
+//             LoginError::EmptyPassword =>
+//                 "empty password not allowed",
+//             LoginError::InvalidPassword =>
+//                 "invalid password not allowed",
+//         }
+//     }
+//
+//     fn cause(&self) -> Option<&error::Error> {
+//         match *self {
+//             LoginError::EmptyUsername => None,
+//             LoginError::InvalidUsername => None,
+//             LoginError::EmptyPassword => None,
+//             LoginError::InvalidPassword => None,
+//         }
+//     }
+// }
 
 // fn string_is_safe(string: &str) -> Result {
 //     // TODO: Add regex check for any non alphanumeric characters
@@ -137,11 +133,11 @@ impl SqlSafe for str {
 //     }
 // }
 
-fn empty_string(string: &str) {
-    if string.is_empty() {
-        panic!("EMPTY STRING FOUND");
-    }
-}
+// fn empty_string(string: &str) {
+//     if string.is_empty() {
+//         panic!("EMPTY STRING FOUND");
+//     }
+// }
 
 
 
