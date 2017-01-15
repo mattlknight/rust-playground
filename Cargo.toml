@@ -6,3 +6,11 @@ authors = ["Matthew Knight <mattlknight@gmail.com>"]
 [dependencies]
 regex = "*"
 lazy_static = "*"
+
+[lib]
+name = "mylib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "mybin"
+path = "src/main.rs"
