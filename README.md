@@ -28,3 +28,9 @@ cd to newly cloned directory and follow documentation using above documentation
 ```text
 cd rust-playground/
 ```
+
+build and run project
+
+```text
+cargo run
+```
