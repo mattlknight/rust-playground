@@ -19,12 +19,10 @@ Clone this repo to a local directory
 
 ```text
 git clone https://github.com/mattlknght/rust-playground/ rust-playground
-
 ```
 
 cd to newly cloned directory and follow documentation using above documentation
 
 ```text
 cd rust-playground/
-
 ```
