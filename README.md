@@ -11,7 +11,9 @@ Examples and Testing with small source code for fast experimentation
 
 ## Pre-Requisites
 
-Install Rust using [Rustup](https://www.rustup.rs/)
+* Install Rust using [Rustup](https://www.rustup.rs/)
+* Rust Nightly is required due to testing features, Stable can be used if test
+ configuration is commented out
 
 ## Usage
 
