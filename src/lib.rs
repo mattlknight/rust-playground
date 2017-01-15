@@ -1,177 +1,130 @@
+// MIT License
+//
+// Copyright (c) 2017 Matthew Knight
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+/*!
+This crate provides a library for experimenting and testing rust features on a
+rapid create/test/modify cycle. This crate will provide examples of various
+complex use cases for traits, implementations, associated types, etc..
+
+This crate is licensed under the MIT license. You can find a copy of the license at the top of
+`src/lib.rs`, `src/main.rs`, in the project root as `LICENSE`, as well as in the root of the
+[GitHub Repo - rust-playground](https://github.com/mattlknight/rust-playground)
+
+This crate's documentation provides some simple examples. Check out
+[Modules](#modules) for the various types, traits, and other rust features used in this project.
+
+Example enum Error [`SqlError`](enum.SqlError.html) type.
+
+Example trait [`SqlSafe`](trait.SqlSafe.html) type.
+
+# Usage
+
+This crate is NOT [on crates.io](https://crates.io/), but can be obtained from my public
+[GitHub Repo - rust-playground](https://github.com/mattlknight/rust-playground). This crate can be
+used by adding the below lines to your dependencies in your project's `Cargo.toml`, if you want to
+ have the main.rs and lib.rs in the same project src/ directory.
+
+```toml
+[lib]
+name = "mylib"
+path = "src/lib.rs"
+
+[bin]
+name = "mybin"
+path = "src/main.rs"
+```
+
+and this to your crate root:
+
+```rust
+extern crate mylib;
+```
+
+After you have cloned a copy of this project from the GitHub repo, you can run any of the
+following sommands from within the project root:
+
+```text
+cargo build     # Build the project from src
+cargo run       # Build/Run the project
+cargo test      # Test the embedded test cases
+cargo bench     # Test the performance of the Bench test cases
+cargo doc       # Generate this same documentation locally
+```
+
+
+# Example: Validate a string for SQL Injection Safety
+
+To use a public type from this module, add the below to your crate root. This example `use`s the
+ [`SqlSafe`](trait.SqlSafe.html) trait. This trait
+overloads the `&str` type with a `is_sql_safe()` method.
+
+```rust
+extern crate mylib;
+
+use mylib::types::SqlSafe;
+# fn main() { }
+```
+
+The example shows how to use the method and handle it's return. You could put this in your
+ `fn main() { }`
+
+```rust
+# extern crate mylib; use mylib::types::SqlSafe;
+# fn main() {
+let username = "Robert'); DROP TABLE Students;--?";
+//   try valid username
+// let username = "Bobby Tables";
+
+match username.is_sql_safe() {
+    Ok(name) => println!("Username \"{}\" is safe", name),
+    Err(err) => {
+        println!("Error: Username \"{}\" is NOT SQL safe!", username);
+        println!("Error: {}", err);
+        println!("Error: {}", err.description());
+    },
+};
+
+assert!("username;".is_sql_safe().is_err());
+assert!("username".is_sql_safe().is_ok());
+# }
+```
+
+The result will look something like this in the console output:
+
+```text
+Error: Username "Robert'); DROP TABLE Students;--?" is NOT SQL safe!
+Error: found unsafe sql characters in sql string `');'
+Error: sql syntax not allowed
+```
+
+*/
+
+
+#![feature(test)]
+extern crate test;
+
 #[macro_use] extern crate lazy_static;
 extern crate regex;
-// extern crate std;
 
 mod sql;
-pub mod traits;
+pub mod errors;
 pub mod types;
-// use std;
-
-
-
-
-
-
-
-
-
-
-
-// #[derive(Debug)]
-// enum LoginError {
-//     EmptyUsername,
-//     InvalidUsername,
-//     EmptyPassword,
-//     InvalidPassword,
-// }
-//
-// impl fmt::Display for LoginError {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         match *self {
-//             LoginError::EmptyUsername =>
-//                 write!(f, "please provide a non-empty username"),
-//             LoginError::InvalidUsername =>
-//                 write!(f, "please provide a valid username"),
-//             LoginError::EmptyPassword =>
-//                 write!(f, "please provide a non-empty password"),
-//             LoginError::InvalidPassword =>
-//                 write!(f, "please provide a valid password"),
-//         }
-//     }
-// }
-//
-// impl error::Error for LoginError {
-//     fn description(&self) -> &str {
-//         match *self {
-//             LoginError::EmptyUsername =>
-//                 "empty username not allowed",
-//             LoginError::InvalidUsername =>
-//                 "invalid username not allowed",
-//             LoginError::EmptyPassword =>
-//                 "empty password not allowed",
-//             LoginError::InvalidPassword =>
-//                 "invalid password not allowed",
-//         }
-//     }
-//
-//     fn cause(&self) -> Option<&error::Error> {
-//         match *self {
-//             LoginError::EmptyUsername => None,
-//             LoginError::InvalidUsername => None,
-//             LoginError::EmptyPassword => None,
-//             LoginError::InvalidPassword => None,
-//         }
-//     }
-// }
-
-// fn string_is_safe(string: &str) -> Result {
-//     // TODO: Add regex check for any non alphanumeric characters
-//     let invalid_sql_string = Regex::new(r"([^\d\w\s@\.-]+)").expect("FAULT  db/mod.rs string_is_safe()");
-//     if Regex::is_match(&invalid_sql_string, string) {
-//         let cap = invalid_sql_string.captures(string).expect("FAULT  db/mod.rs string_is_safe()");
-//         println!("UNSAFE SQL STRING [{}]", string);
-//         panic!("UNSAFE SQL STRING FOUND [{:?}]", cap);
-//     }
-// }
-
-// fn empty_string(string: &str) {
-//     if string.is_empty() {
-//         panic!("EMPTY STRING FOUND");
-//     }
-// }
-
-
-
-/*
-fn get_login_from_db(db: &PooledConnection<PostgresConnectionManager>,
-    username: &str) -> DBUserLogin {
-
-    let query = "SELECT id, password_hash FROM fiplan_auth.users WHERE username=$1";
-    let query_params: &[&ToSql] = &[&username];
-
-    select_single_from_db::<DBUserLogin>(&db, &query, &query_params, login_filter)
-}
-
-pub fn invalid_username(response: Response) {
-    let return_status = to_json_status(false, "Invalid password!");
-
-    response.set(StatusCode::NotAcceptable);
-    response.set(MediaType::Json);
-    response.send(json::encode(&return_status).expect("Failed to serialize response"));
-}
-
-pub fn add_route(router: &mut Router) {
-    router.post("/api/auth/authenticate", middleware! { |request, mut response|
-
-        let login_user = try_with!(response, {
-            request.json_as::<FullUser>().map_err(|e| (StatusCode::BadRequest, e))
-        });
-        println!("{:?}", login_user);
-
-        let mut valid_username = false;
-        let mut valid_password = false;
-
-        match login_user.username {
-            Some(username) => {
-                string_is_safe(&username);
-                empty_string(&username);
-                valid_username = true;
-            },
-            None => valid_username = false,
-        }
-
-        match login_user.password {
-            Some(password) => {
-                empty_string(&password);
-                valid_password = true;
-            },
-            None => valid_password = false,
-        }
-
-        if !valid_username {
-            println!("{}  ROUTE   Sending Invalid Username For ({:?})", common::local_timestamp(), &login_user.username);
-            invalid_username(response);
-        }
-
-        let db = request.pg_conn().expect("Failed to get a connection from pool");
-        let db_user = &login_user.username.map(|x| get_login_from_db(&db, &x));
-
-
-        if &login_user.password.map(|x| auth::validate_password(&x, &db_user.password_hash)) {
-            let user_details = get_user_from_db(&db, &db_user.id);
-
-            if user_details.email_verified != Some(true) {
-                let return_status = to_json_status(false, "Pending email verification!");
-
-                response.set(StatusCode::NotAcceptable);
-                response.set(MediaType::Json);
-                println!("{}  ROUTE   Sending Email Not Verified For ({})", common::local_timestamp(), &login_user.username);
-                json::encode(&return_status).expect("Failed to serialize response")
-            } else if user_details.admin_approved != Some(true) {
-                let return_status = to_json_status(false, "Pending admin approval!");
-
-                response.set(StatusCode::NotAcceptable);
-                response.set(MediaType::Json);
-                println!("{}  ROUTE   Sending Pending Admin Approval For ({})", common::local_timestamp(), &login_user.username);
-                json::encode(&return_status).expect("Failed to serialize response")
-            } else {
-                let token: String = auth::issue_initial_token(&user_details, request).expect("FAULT: authenticate.rs add_route()");
-
-                let return_status = to_json_status_token(true, "Enjoy your token!", &token);
-
-                response.set(StatusCode::Accepted);
-                response.set(MediaType::Json);
-                println!("{}  ROUTE   Sending Token For ({})", common::local_timestamp(), &login_user.username);
-                json::encode(&return_status).expect("Failed to serialize response")
-            }
-        } else {
-            let return_status = to_json_status(false, "Invalid password!");
-
-            response.set(StatusCode::NotAcceptable);
-            response.set(MediaType::Json);
-            println!("{}  ROUTE   Sending Invalid Password For ({})", common::local_timestamp(), &login_user.username);
-            json::encode(&return_status).expect("Failed to serialize response")
-        }
-    });
-}
-*/

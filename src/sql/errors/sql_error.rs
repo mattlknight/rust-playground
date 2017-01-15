@@ -1,10 +1,14 @@
+//! This is documentation for the `mylib::sql::errors::sql_error` module.
+//!
+//! # Examples
+
 use std::error;
 use std::fmt;
-use std::result;
+// use std::result;
 
-type Result<T> = result::Result<T, Box<error::Error>>;
+// type Result<T> = result::Result<T, Box<error::Error>>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum SqlError {
     UnsafeCharacters(String),
 }
