@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#![doc(html_root_url = "https://hoverbear.github.io/travis-demo/")]
+#![doc(html_root_url = "https://mattlknight.github.io/rust-playground/")]
 
 /*!
 This crate provides a library for experimenting and testing rust features on a
