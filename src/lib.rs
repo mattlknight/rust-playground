@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#![doc(html_root_url = "https://hoverbear.github.io/travis-demo/")]
+
 /*!
 This crate provides a library for experimenting and testing rust features on a
 rapid create/test/modify cycle. This crate will provide examples of various
