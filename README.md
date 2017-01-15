@@ -1,5 +1,5 @@
 # rust-playground
-![alt text](https://travis-ci.org/mattlknight/rust-playground.svg?branch=master "Travis Build Status")
+[![Build Status](https://travis-ci.org/mattlknight/rust-playground.svg?branch=master)](https://travis-ci.org/mattlknight/rust-playground)
 
 
 Examples and Testing with small source code for fast experimentation

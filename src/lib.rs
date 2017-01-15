@@ -64,7 +64,7 @@ extern crate mylib;
 ```
 
 After you have cloned a copy of this project from the GitHub repo, you can run any of the
-following sommands from within the project root:
+following commands from within the project root:
 
 ```text
 cargo build     # Build the project from src
@@ -112,7 +112,7 @@ assert!("username".is_sql_safe().is_ok());
 # }
 ```
 
-The result will look something like this in the console output:
+The result will look something like this in the console output after `cargo run`:
 
 ```text
 Error: Username "Robert'); DROP TABLE Students;--?" is NOT SQL safe!
