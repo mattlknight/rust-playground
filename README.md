@@ -23,7 +23,7 @@ Clone this repo to a local directory
 git clone https://github.com/mattlknight/rust-playground.git rust-playground
 ```
 
-cd to newly cloned directory and follow documentation using above documentation
+cd to newly cloned directory
 
 ```text
 cd rust-playground/
@@ -34,3 +34,6 @@ build and run project
 ```text
 cargo run
 ```
+
+See the [Documentation](https://mattlknight.github.io/rust-playground/) for
+ more examples and help.
