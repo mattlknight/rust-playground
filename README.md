@@ -20,7 +20,7 @@ Examples and Testing with small source code for fast experimentation
 Clone this repo to a local directory
 
 ```text
-git clone https://github.com/mattlknght/rust-playground/ rust-playground
+git clone https://github.com/mattlknight/rust-playground.git rust-playground
 ```
 
 cd to newly cloned directory and follow documentation using above documentation
