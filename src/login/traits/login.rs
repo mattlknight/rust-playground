@@ -1,36 +1,30 @@
-//! This is documentation for the `mylib::sql::traits::sql_safe` module.
+//! This is documentation for the `mylib::login::traits::login` module.
 //!
 //! # Examples
 
-use regex::Regex;
-use std::error;
-use std::result;
+// use regex::Regex;
+// use std::error;
+// use std::result;
+//
+// use ::sql::traits::SqlSafe;
+// use ::sql::errors::SqlError;
+// use ::login::errors::LoginError;
+// use ::login::types::{LoginUser, Username, Password};
 
-use ::sql::errors::SqlError;
-
-type Result<T> = result::Result<T, Box<error::Error>>;
-
-pub trait SqlSafe {
-    fn is_sql_safe(&self) -> Result<&Self>;
-}
-
-lazy_static! {
-    static ref SQL_CHECK: Regex =
-        Regex::new(r"([^\d\w\s@\.-]+)").expect("FAULT  SQL_CHECK Regex::new()");
-}
-
-impl SqlSafe for str {
-    fn is_sql_safe(&self) -> Result<&Self> {
-        if self.is_empty() {
-            Err(Box::new(SqlError::EmptyString))
-        } else if Regex::is_match(&SQL_CHECK, self) {
-            let cap = SQL_CHECK.captures(self).expect("FAULT  SQL_CHECK.captures()");
-            Err(Box::new(SqlError::UnsafeCharacters(cap[1].to_string())))
-        } else {
-            Ok(self)
-        }
-    }
-}
+// type Result<T> = result::Result<T, Box<error::Error>>;
+//
+// pub trait Login {
+//     fn is_valid(&self) -> Result<&Self>;
+// }
+//
+// impl<'a> Login for Username<'a> {
+//     fn is_valid(&self) -> Result<&Self> {
+//         match self.is_sql_safe() {
+//             Ok(_) => Ok(self),
+//             SqlError::EmptyString => Err(Box::new(LoginError::EmptyUsername)),
+//         }
+//     }
+// }
 
 #[cfg(test)]
 mod tests {

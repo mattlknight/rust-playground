@@ -23,14 +23,18 @@
 extern crate mylib;
 
 use mylib::types::SqlSafe;
+use mylib::types::LoginUser;
 
 fn main() {
-    let username = "Robert'); DROP TABLE Students;--?";
+    let user = LoginUser {
+        username: "Robert'); DROP TABLE Students;--?",
+        password: "Secret Squirrel",
+    };
     // let username = "Bobby Tables";
-    match username.is_sql_safe() {
+    match user.username.is_sql_safe() {
         Ok(name) => println!("Username \"{}\" is safe", name),
         Err(err) => {
-            println!("Error: Username \"{}\" is NOT SQL safe!", username);
+            println!("Error: Username \"{}\" is NOT SQL safe!", user.username);
             println!("Error: {}", err);
             println!("Error: {}", err.description());
         },

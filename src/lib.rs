@@ -130,5 +130,6 @@ extern crate test;
 extern crate regex;
 
 mod sql;
+mod login;
 pub mod errors;
 pub mod types;
