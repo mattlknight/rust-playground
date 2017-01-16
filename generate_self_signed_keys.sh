@@ -17,6 +17,7 @@ echo "On linux, to support self signed cert in chrome and postman, you must impo
 echo "in chrome, go to \"chrome://settings/certificates \""
 echo "Click Manage Certificates, on the authorities tab, check for an existing folder/cert for"
 echo "localhost delete if it already exists, then click import, navigate to server.crt, and import"
+echo "Check box for trust this cert for websites"
 echo "close every single chrome process and children like hangouts, signal, then restart"
 echo "navigate to https site using localhost if that is what you used for CN=, be sure postman uses"
 echo "localhost and not 127.0.0.1"
