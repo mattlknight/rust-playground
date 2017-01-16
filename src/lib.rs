@@ -124,12 +124,30 @@ Error: sql syntax not allowed
 
 
 #![feature(test)]
-extern crate test;
-
+extern crate chrono;
+extern crate crypto;
+extern crate hyper;
+extern crate jwt;
 #[macro_use] extern crate lazy_static;
+extern crate lettre;
+#[macro_use] extern crate log;
+#[macro_use] extern crate nickel;
+// extern crate nickel_postgres;
+extern crate plugin;
+// extern crate postgres;
+extern crate pwhash;
+// extern crate r2d2;
+// extern crate r2d2_postgres;
 extern crate regex;
+extern crate rustc_serialize;
+extern crate test;
+extern crate time;
+extern crate toml;
+extern crate typemap;
+extern crate url;
 
 mod sql;
 mod login;
 pub mod errors;
 pub mod types;
+pub mod req_logger;

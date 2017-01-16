@@ -4,8 +4,33 @@ version = "0.1.0"
 authors = ["Matthew Knight <mattlknight@gmail.com>"]
 
 [dependencies]
-regex = "*"
+
+hyper = "0.9"
+jwt = "*"
 lazy_static = "*"
+lettre = "0.6.1"
+log = "*"
+nickel = "0.9"
+# nickel_postgres = "0.2"
+plugin = "0.2.6"
+pwhash = "*"
+# r2d2 = "0.7.0"
+# r2d2_postgres = "0.10.1"
+regex = "0.2"
+rust-crypto = "*"
+rustc-serialize = "*"
+time = "*"
+toml = "0.2"
+typemap = "0.3.3"
+url = "*"
+
+[dependencies.chrono]
+version = "*"
+features = ["rustc-serialize"]
+
+# [dependencies.postgres]
+# version = "0.11"
+# features = ["chrono", "rustc-serialize"]
 
 [lib]
 name = "mylib"
