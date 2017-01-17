@@ -48,7 +48,7 @@ mod tests {
     }
 
     #[test]
-    fn sql_safe_err() {
+    fn sql_safe_err2() {
         assert!("".is_sql_safe().is_err());
     }
 
@@ -66,7 +66,7 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn sql_safe_ok_panic() {
+    fn sql_safe_ok_panic2() {
         assert!("".is_sql_safe().is_ok());
     }
 
@@ -81,7 +81,7 @@ mod tests {
     }
 
     #[bench]
-    fn bench_sql_safe_safe(b: &mut Bencher) {
+    fn bench_sql_safe_safe2(b: &mut Bencher) {
         b.iter(|| "".is_sql_safe());
     }
 }

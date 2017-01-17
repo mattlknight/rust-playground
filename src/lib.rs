@@ -84,7 +84,7 @@ overloads the `&str` type with a `is_sql_safe()` method.
 ```rust
 extern crate mylib;
 
-use mylib::types::SqlSafe;
+use mylib::traits::SqlSafe;
 # fn main() { }
 ```
 
@@ -92,7 +92,7 @@ The example shows how to use the method and handle it's return. You could put th
  `fn main() { }`
 
 ```rust
-# extern crate mylib; use mylib::types::SqlSafe;
+# extern crate mylib; use mylib::traits::SqlSafe;
 # fn main() {
 let username = "Robert'); DROP TABLE Students;--?";
 //   try valid username
@@ -103,7 +103,6 @@ match username.is_sql_safe() {
     Err(err) => {
         println!("Error: Username \"{}\" is NOT SQL safe!", username);
         println!("Error: {}", err);
-        println!("Error: {}", err.description());
     },
 };
 
@@ -123,8 +122,9 @@ Error: sql syntax not allowed
 */
 
 
-#[cfg_attr(test, feature(test))]
-// extern crate test;
+// #[cfg_attr(test, feature(test))]
+#![feature(test)]
+extern crate test;
 
 extern crate chrono;
 extern crate crypto;
