@@ -2,3 +2,4 @@
 //!
 pub use sql::errors::*;
 pub use login::errors::*;
+pub use server::errors::*;

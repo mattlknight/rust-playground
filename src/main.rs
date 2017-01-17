@@ -24,18 +24,21 @@ extern crate hyper;
 #[macro_use] extern crate lazy_static;
 extern crate mylib;
 #[macro_use] extern crate nickel;
-extern crate rustc_serialize as serialize;
+extern crate rustc_serialize;
 
 // use mylib::types::SqlSafe;
-use mylib::types::LoginUser;
+use mylib::types::{LoginUser};
+use mylib::errors::{ServerError, LoginError};
 use mylib::req_logger;
 use nickel::{Nickel, HttpRouter, JsonBody, Router, Request, Response};
 use nickel::{Action, NickelError};
 use hyper::net::{Openssl, Streaming};
+// use std::borrow::Cow;
 use std::error::Error as StdError;
 use std::net::{SocketAddrV4, Ipv4Addr};
-use serialize::json::{DecoderError};
+use rustc_serialize::json::{DecoderError, ParserError};
 use std::any::Any;
+use std::io::{self, ErrorKind};
 
 lazy_static! {
     static ref IP: Ipv4Addr = Ipv4Addr::new(127, 0, 0, 1);
@@ -43,24 +46,43 @@ lazy_static! {
     static ref ADDRESS: SocketAddrV4 = SocketAddrV4::new(*IP, *PORT);
 }
 
-
-
-// use std::borrow::Cow;
-
-pub fn get_user<'a>(req: &'a mut Request) -> Result<LoginUser<'a>,Box<StdError>>{
+pub fn get_user<'a>(req: &'a mut Request) -> Result<LoginUser<'a>, ServerError>{
      let user = try!(req.json_as::<LoginUser>());
      Ok(user)
 }
 
-pub fn send_error<'mw>(res: Response<'mw>, err: Box<Any>) ->
+pub fn send_error<'mw>(res: Response<'mw>, err: ServerError) ->
     Result<Action<Response<'mw>, Response<'mw, (), Streaming>>, NickelError<'mw>> {
-    match *err {
-        DecoderError::ParseError(e) => match &e {
-            e => println!("Unknown String error {:?}", e),
+    let top_error: ServerError = err;
+    println!("top error {:?}", top_error);
+    let second_error = match top_error {
+        ServerError::Io(e) => e,
+        _ => {
+            println!("prolly shouldn't have matched here");
+            io::Error::new(ErrorKind::Other, "bla")
         },
-        _ => println!("Unknown Error"),
-    }
-    res.send(format!("err {:?}", err))
+    };
+    // let second_error = top_error.get_ref().unwrap();
+    println!("second error {:?}", second_error);
+    let third_error: &StdError = second_error.get_ref().expect("Expecting there to be a nested error here");
+    println!("third error {:?}", third_error);
+    //
+    // let fourth_error = third_error;
+    // println!("fourth_error {:?}", fourth_error);
+    // match &err {
+    //     &ServerError::DecoderError(ref e) => match e {
+    //         _ => println!("Unknown String error 1 {:?}", e),
+    //     },
+    //     &ServerError::Io(ref e) => match e.get_ref().unwrap() {
+    //         Err(e1) => match e1.cause() {
+    //
+    //         },
+    //         &DecoderError::ParseError(err) => println!("Unknown String error 2 {:?}", err),
+    //         _ => println!("Unknown String error 2 {:?}", e),
+    //     },
+    //     _ => println!("Unknown Error"),
+    // }
+    res.send(format!("err {:?}", second_error))
 }
 
 fn main() {

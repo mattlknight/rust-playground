@@ -148,6 +148,7 @@ extern crate url;
 
 mod sql;
 mod login;
+mod server;
 pub mod errors;
 pub mod types;
 pub mod req_logger;

@@ -4,16 +4,24 @@
 
 use std::error;
 use std::fmt;
+use std::io;
 // use std::result;
 
 // type Result<T> = result::Result<T, Box<error::Error>>;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub enum LoginError {
     EmptyUsername,
     InvalidUsername,
     EmptyPassword,
     InvalidPassword,
+    Io(io::Error),
+}
+
+impl From<io::Error> for LoginError {
+    fn from(err: io::Error) -> LoginError {
+        LoginError::Io(err)
+    }
 }
 
 impl fmt::Display for LoginError {
@@ -27,6 +35,7 @@ impl fmt::Display for LoginError {
                 write!(f, "please provide a non-empty password"),
             LoginError::InvalidPassword =>
                 write!(f, "please provide a valid password"),
+            _ => write!(f, "TODO CODE NOT IMPLEMENTED"),
         }
     }
 }
@@ -42,6 +51,7 @@ impl error::Error for LoginError {
                 "empty password not allowed",
             LoginError::InvalidPassword =>
                 "invalid password not allowed",
+            _ => "TODO CODE NOT IMPLEMENTED",
         }
     }
 
@@ -51,6 +61,7 @@ impl error::Error for LoginError {
             LoginError::InvalidUsername => None,
             LoginError::EmptyPassword => None,
             LoginError::InvalidPassword => None,
+            LoginError::Io(ref err) => Some(err),
         }
     }
 }
