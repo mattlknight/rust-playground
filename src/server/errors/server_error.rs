@@ -5,7 +5,7 @@
 use std::error;
 use std::fmt;
 use rustc_serialize::json::{DecoderError};
-use ::errors::{LoginError};
+use ::errors::{LoginError, SqlError};
 use std::io;
 
 // use std::result;
@@ -16,12 +16,13 @@ use std::io;
 pub enum ServerError {
     LoginError(LoginError),
     DecoderError(DecoderError),
+    SqlError(SqlError),
     Io(io::Error),
 }
 
-impl From<io::Error> for ServerError {
-    fn from(err: io::Error) -> ServerError {
-        ServerError::Io(err)
+impl From<LoginError> for ServerError {
+    fn from(err: LoginError) -> ServerError {
+        ServerError::LoginError(err)
     }
 }
 
@@ -31,16 +32,26 @@ impl From<DecoderError> for ServerError {
     }
 }
 
-impl From<LoginError> for ServerError {
-    fn from(err: LoginError) -> ServerError {
-        ServerError::LoginError(err)
+impl From<SqlError> for ServerError {
+    fn from(err: SqlError) -> ServerError {
+        ServerError::SqlError(err)
+    }
+}
+
+impl From<io::Error> for ServerError {
+    fn from(err: io::Error) -> ServerError {
+        ServerError::Io(err)
     }
 }
 
 impl fmt::Display for ServerError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            _ => write!(f, "unimplemented code"),
+            ServerError::LoginError(ref err) => err.fmt(f),
+            ServerError::DecoderError(ref err) => err.fmt(f),
+            ServerError::SqlError(ref err) => err.fmt(f),
+            ServerError::Io(ref err) => err.fmt(f),
+            // _ => write!(f, "unimplemented code"),
         }
     }
 }
@@ -48,17 +59,19 @@ impl fmt::Display for ServerError {
 impl error::Error for ServerError {
     fn description(&self) -> &str {
         match *self {
-            ServerError::Io(ref err) => err.description(),
-            ServerError::DecoderError(ref err) => err.description(),
             ServerError::LoginError(ref err) => err.description(),
+            ServerError::DecoderError(ref err) => err.description(),
+            ServerError::SqlError(ref err) => err.description(),
+            ServerError::Io(ref err) => err.description(),
         }
     }
 
     fn cause(&self) -> Option<&error::Error> {
         match *self {
-            ServerError::Io(ref err) => err.cause(),
-            ServerError::DecoderError(ref err) => err.cause(),
             ServerError::LoginError(ref err) => err.cause(),
+            ServerError::DecoderError(ref err) => err.cause(),
+            ServerError::SqlError(ref err) => err.cause(),
+            ServerError::Io(ref err) => err.cause(),
         }
     }
 }

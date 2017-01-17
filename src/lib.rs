@@ -123,7 +123,9 @@ Error: sql syntax not allowed
 */
 
 
-#![feature(test)]
+#[cfg_attr(test, feature(test))]
+// extern crate test;
+
 extern crate chrono;
 extern crate crypto;
 extern crate hyper;
@@ -140,7 +142,7 @@ extern crate pwhash;
 // extern crate r2d2_postgres;
 extern crate regex;
 extern crate rustc_serialize;
-extern crate test;
+
 extern crate time;
 extern crate toml;
 extern crate typemap;
@@ -150,5 +152,6 @@ mod sql;
 mod login;
 mod server;
 pub mod errors;
+pub mod traits;
 pub mod types;
 pub mod req_logger;

@@ -10,7 +10,7 @@ pub fn logger_fn<'mw>(req: &mut Request, res: Response<'mw>) -> MiddlewareResult
     let method: String = get_method(&req.origin.method);
 
 
-    println!("LOGGER    {}    {}\n\n", method, uri);
+    println!("LOGGER    {}    {}", method, uri);
     print_headers(&req.origin.headers);
     print_query(req);
     // panic!("");
@@ -34,12 +34,12 @@ fn get_method(method: &Method) -> String {
 }
 
 fn print_headers(headers: &Headers) {
-    println!("{:?}", headers);
-    println!("{:?}", headers.get::<Host>());
-    println!("{:?}", headers.get::<Referer>());
+    println!("LOGGER    HEADERS  =  {:?}", headers);
+    println!("LOGGER    HOST  =  {:?}", headers.get::<Host>());
+    println!("LOGGER    REFERRER  =  {:?}", headers.get::<Referer>());
 }
 
 fn print_query(req: &mut Request) {
     let query = req.query();
-    println!("{:?}", query);
+    println!("LOGGER    QUERY  =  {:?}", query);
 }

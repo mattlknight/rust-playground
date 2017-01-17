@@ -10,6 +10,8 @@ openssl rsa -passin pass:x -in keys/server.pass.key -out keys/server.key
 rm keys/server.pass.key
 openssl req -new -key keys/server.key -out keys/server.csr
 openssl x509 -req -days 365 -in keys/server.csr -signkey keys/server.key -out keys/server.crt
+cargo build --release
+cargo build
 ln -s "$(pwd)/keys" "$(pwd)/target/release/"
 ln -s "$(pwd)/keys" "$(pwd)/target/debug/"
 echo "\n\n\n"

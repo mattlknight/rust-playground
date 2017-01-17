@@ -18,9 +18,9 @@ impl fmt::Display for SqlError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             SqlError::UnsafeCharacters(ref msg) =>
-                write!(f, "found unsafe sql characters in sql string `{}\'", &msg),
+                write!(f, "found unsafe sql characters in string `{}\'", &msg),
             SqlError::EmptyString =>
-                write!(f, "found sql string empty"),
+                write!(f, "empty sql string not allowed"),
         }
     }
 }

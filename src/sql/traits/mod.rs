@@ -3,4 +3,4 @@
 //! # Examples
 
 mod sql_safe;
-pub use self::sql_safe::SqlSafe;
+pub use self::sql_safe::{SqlSafe, SQL_CHECK};

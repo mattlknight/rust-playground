@@ -22,23 +22,30 @@
 
 extern crate hyper;
 #[macro_use] extern crate lazy_static;
-extern crate mylib;
 #[macro_use] extern crate nickel;
 extern crate rustc_serialize;
+extern crate plugin;
+extern crate mylib;
 
-// use mylib::types::SqlSafe;
-use mylib::types::{LoginUser};
-use mylib::errors::{ServerError, LoginError};
-use mylib::req_logger;
-use nickel::{Nickel, HttpRouter, JsonBody, Router, Request, Response};
-use nickel::{Action, NickelError};
-use hyper::net::{Openssl, Streaming};
+use hyper::net::{Openssl};
+use hyper::status::{StatusCode};
+// use plugin::Pluggable;
+use nickel::{Nickel, HttpRouter, Router, Request, Response, MediaType, MiddlewareResult};
+// use rustc_serialize::json::{DecoderError};
+use rustc_serialize::json::{self, DecoderError, ParserError};
+// use std::any::Any;
 // use std::borrow::Cow;
-use std::error::Error as StdError;
+// use std::error::Error;
 use std::net::{SocketAddrV4, Ipv4Addr};
-use rustc_serialize::json::{DecoderError, ParserError};
-use std::any::Any;
-use std::io::{self, ErrorKind};
+// use std::io::{self, ErrorKind};
+use std::io::{self};
+use std::io::Read;
+
+use mylib::traits::{SqlSafe};
+use mylib::types::{LoginUser, JsonResponse};
+use mylib::errors::{ServerError};
+// use mylib::errors::{ServerError, LoginError};
+use mylib::req_logger;
 
 lazy_static! {
     static ref IP: Ipv4Addr = Ipv4Addr::new(127, 0, 0, 1);
@@ -46,116 +53,119 @@ lazy_static! {
     static ref ADDRESS: SocketAddrV4 = SocketAddrV4::new(*IP, *PORT);
 }
 
-pub fn get_user<'a>(req: &'a mut Request) -> Result<LoginUser<'a>, ServerError>{
-     let user = try!(req.json_as::<LoginUser>());
-     Ok(user)
+fn get_body(req: &mut Request) -> Result<String, io::Error> {
+    let mut body = String::with_capacity(100);
+    try!(req.origin.read_to_string(&mut body));
+    Ok(body)
 }
 
-pub fn send_error<'mw>(res: Response<'mw>, err: ServerError) ->
-    Result<Action<Response<'mw>, Response<'mw, (), Streaming>>, NickelError<'mw>> {
-    let top_error: ServerError = err;
-    println!("top error {:?}", top_error);
-    let second_error = match top_error {
-        ServerError::Io(e) => e,
-        _ => {
-            println!("prolly shouldn't have matched here");
-            io::Error::new(ErrorKind::Other, "bla")
-        },
-    };
-    // let second_error = top_error.get_ref().unwrap();
-    println!("second error {:?}", second_error);
-    let third_error: &StdError = second_error.get_ref().expect("Expecting there to be a nested error here");
-    println!("third error {:?}", third_error);
-    //
-    // let fourth_error = third_error;
-    // println!("fourth_error {:?}", fourth_error);
-    // match &err {
-    //     &ServerError::DecoderError(ref e) => match e {
-    //         _ => println!("Unknown String error 1 {:?}", e),
-    //     },
-    //     &ServerError::Io(ref e) => match e.get_ref().unwrap() {
-    //         Err(e1) => match e1.cause() {
-    //
-    //         },
-    //         &DecoderError::ParseError(err) => println!("Unknown String error 2 {:?}", err),
-    //         _ => println!("Unknown String error 2 {:?}", e),
-    //     },
-    //     _ => println!("Unknown Error"),
-    // }
-    res.send(format!("err {:?}", second_error))
-}
-
-fn main() {
+fn get_user<'a>(req: &'a mut Request) -> Result<LoginUser<'a>, ServerError>{
+    let body = try!(get_body(req));
+    let user = try!(json::decode::<LoginUser>(&body));
     // let user = LoginUser {
     //     // username: "Robert'); DROP TABLE Students;--?",
     //     username: Cow::from("Bobby Tables"),
     //     password: Cow::from("Secret Squirrel"),
     // };
 
-    // match user.username.is_sql_safe() {
-    //     Ok(name) => println!("Username \"{}\" is safe", name),
-    //     Err(err) => {
-    //         println!("Error: Username \"{}\" is NOT SQL safe!", user.username);
-    //         println!("Error: {}", err);
-    //         println!("Error: {}", err.description());
-    //     },
-    // };
+    Ok(user)
+}
 
+fn send_json_error<'mw>(mut res: Response<'mw>, err: ServerError) ->
+    MiddlewareResult<'mw> {
+
+    let reply = match err {
+        ServerError::DecoderError(DecoderError::MissingFieldError(err)) => {
+            JsonResponse::new(400, true, Some(&format!("Missing Field [{}]", err)), None, None)
+        },
+        ServerError::DecoderError(DecoderError::ParseError(err)) => match err {
+            ParserError::SyntaxError(msg, ..) => {
+                JsonResponse::new(400, true, Some(&format!("Syntax Error [{}]", json::error_str(msg))), None, None)
+            },
+            _ => {
+                println!("UNHANDLED ERROR  {:?}", err);
+                JsonResponse::new(500, true, Some("Unhandled Server Error"), None, None)
+            },
+        },
+        ServerError::SqlError(err) => {
+            JsonResponse::new(400, true, Some(&format!("{}", err)), None, None)
+        },
+        _ => {
+            println!("UNHANDLED ERROR  {:?}", err);
+            JsonResponse::new(500, true, Some("Unhandled Server Error"), None, None)
+        },
+    };
+    let encoded = json::encode(&reply).expect("Error sending json reply");
+
+    res.set(StatusCode::Ok);
+    res.set(MediaType::Json);
+
+    println!("REPLYING");
+    return res.send(encoded);
+}
+
+fn json_reply(msg: Option<&str>, data: Option<&str>) -> String {
+    let reply = JsonResponse::new(200, false, msg, None, data);
+    json::encode(&reply).expect("Error sending json reply")
+}
+
+// fn send_json_reply<'mw, D>(mut res: Response<'mw, D>, reply: String) ->
+//     MiddlewareResult<'mw, D> {
+//
+//     res.set(StatusCode::Ok);
+//     res.set(MediaType::Json);
+//     return res.send(reply);
+// }
+
+fn main() {
     let mut server = Nickel::new();
     let mut router: Router = Nickel::router();
 
     server.utilize(req_logger::logger_fn);
 
-    router.post("/api/authenticate", middleware! { |request, response|
-        println!("Request received");
-        // let login_user = try_with!(response, {
-        //     request.json_as::<FullUser>().map_err(|e| (StatusCode::BadRequest, e))
-        // });
-        println!("get_user()");
-        let user = match get_user(request) {
-            Ok(user) => user,
+    router.post("/api/authenticate", middleware! { |request, mut response|
+        println!("POST /api/authenticate");
+
+        let user: LoginUser = match get_user(request) {
+            Ok(user) => {
+                user
+            },
             Err(err) => {
-                return send_error(response, err);
+                return send_json_error(response, err);
             },
         };
-        // let user = get_user(request)
-        //             .map_err(|err| return send_error(response, err));
-        // let user = get_user(request)
-        //             .map_err(move |err| { send_error( response, err) } );
-        println!("get_user() done");
-        // let user = match request.json_as::<LoginUser>() {
-        //     Ok(user) => user,
-        //     Err(err) => panic!("{:?}", err),
-        // };
-        println!("{:?}", user);
+        println!("USER =  {}", user);
 
-        // println!("{:?}", login_user);
+        match user.is_sql_safe() {
+            Ok(user) => {
+                println!("User \"{}\" is safe", user.username);
+            },
+            Err(err) => {
+                return send_json_error(response, From::from(err));
+            },
+        };
+        let encoded: String = json_reply(Some(&format!("Welcome {}", user.username)), None);
+        response.set(StatusCode::Ok);
+        response.set(MediaType::Json);
+        (encoded)
+    });
 
-        // let mut valid_username = false;
-        // let mut valid_password = false;
+    server.utilize(router);
 
-        // match login_user.username {
-        //     Some(username) => {
-        //         string_is_safe(&username);
-        //         empty_string(&username);
-        //         valid_username = true;
-        //     },
-        //     None => valid_username = false,
-        // }
+    let ssl = match Openssl::with_cert_and_key("keys/server.crt", "keys/server.key") {
+        Ok(ssl) => ssl,
+        Err(err) => panic!("Failed to open SSL keys from target/*/keys/; {:?}", err),
+    };
+    let listening = match server.listen_https(*ADDRESS, ssl) {
+        Ok(srv) => srv,
+        Err(err) => panic!("Failed to start Nickel Server; {:?}", err),
+    };
 
-        // match login_user.password {
-        //     Some(password) => {
-        //         empty_string(&password);
-        //         valid_password = true;
-        //     },
-        //     None => valid_password = false,
-        // }
-        //
-        // if !valid_username {
-        //     println!("{}  ROUTE   Sending Invalid Username For ({:?})", common::local_timestamp(), &login_user.username);
-        //     invalid_username(response);
-        // }
-        //
+    println!("Listening on: {:?}", listening.socket());
+}
+
+
+
         // let db = request.pg_conn().expect("Failed to get a connection from pool");
         // let db_user = &login_user.username.map(|x| get_login_from_db(&db, &x));
 
@@ -195,16 +205,3 @@ fn main() {
         //     println!("{}  ROUTE   Sending Invalid Password For ({})", common::local_timestamp(), &login_user.username);
         //     json::encode(&return_status).expect("Failed to serialize response")
         // }
-    });
-
-    server.utilize(router);
-    let ssl = Openssl::with_cert_and_key("keys/server.crt", "keys/server.key").expect("Failed to open SSL keys from ./keys/");
-    // let listening = server.listen_https(address, ssl).expect("Failed to launch server");
-// println!("Listening on: {:?}", listening.socket());
-
-    let listening = match server.listen_https(*ADDRESS, ssl) {
-        Ok(srv) => srv,
-        Err(err) => panic!("Failed to start Nickel Server, {:?}", err),
-    };
-    println!("Listening on: {:?}", listening.socket());
-}
