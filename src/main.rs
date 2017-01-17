@@ -117,12 +117,7 @@ fn json_reply(msg: Option<&str>, data: Option<&str>) -> String {
 //     return res.send(reply);
 // }
 
-fn main() {
-    let mut server = Nickel::new();
-    let mut router: Router = Nickel::router();
-
-    server.utilize(req_logger::logger_fn);
-
+fn add_route(router: &mut Router) {
     router.post("/api/authenticate", middleware! { |request, mut response|
         println!("POST /api/authenticate");
 
@@ -144,11 +139,20 @@ fn main() {
                 return send_json_error(response, From::from(err));
             },
         };
-        let encoded: String = json_reply(Some(&format!("Welcome {}", user.username)), None);
+        let encoded = json_reply(Some(&format!("Welcome {}", user.username)), None);
         response.set(StatusCode::Ok);
         response.set(MediaType::Json);
         (encoded)
     });
+}
+
+fn main() {
+    let mut server = Nickel::new();
+    let mut router: Router = Nickel::router();
+
+    server.utilize(req_logger::logger_fn);
+
+    add_route(&mut router);
 
     server.utilize(router);
 
