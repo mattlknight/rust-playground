@@ -123,7 +123,7 @@ Error: sql syntax not allowed
 
 
 // #[cfg_attr(test, feature(test))]
-#![feature(test)]
+#[cfg(all(test, feature = "nightly"))]
 extern crate test;
 
 extern crate chrono;
@@ -150,8 +150,9 @@ extern crate url;
 
 mod sql;
 mod login;
-mod server;
+pub mod server;
 pub mod errors;
 pub mod traits;
 pub mod types;
+#[doc(hidden)]
 pub mod req_logger;
