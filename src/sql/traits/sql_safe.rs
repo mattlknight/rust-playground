@@ -21,7 +21,7 @@ lazy_static! {
     /// Regex matcher for SQL syntax, matches non alphanumeric, but ignores email
     /// symbols[., -, _, @] and spaces
     pub static ref SQL_CHECK: Regex =
-        Regex::new(r"([^\d\w\s@\.-\_]+)").expect("FAULT  SQL_CHECK Regex::new()");
+        Regex::new(r"([^\d\w\s@\.-]+)").expect("FAULT  SQL_CHECK Regex::new()");
 }
 
 // TODO:  Figure out why I can't comment this impl in rustdoc
@@ -56,6 +56,11 @@ mod tests {
     }
 
     #[test]
+    fn sql_safe_ok2() {
+        assert!("us-er_name@email.com".is_sql_safe().is_ok());
+    }
+
+    #[test]
     fn sql_safe_err2() {
         assert!("".is_sql_safe().is_err());
     }
@@ -64,6 +69,12 @@ mod tests {
     #[should_panic]
     fn sql_safe_err_panic() {
         assert!("username".is_sql_safe().is_err());
+    }
+
+    #[test]
+    #[should_panic]
+    fn sql_safe_err_panic2() {
+        assert!("us-er_name@email.com".is_sql_safe().is_err());
     }
 
     #[test]

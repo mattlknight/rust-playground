@@ -124,7 +124,8 @@ Error: sql syntax not allowed
 #![warn(missing_docs)]
 
 // #[cfg_attr(test, feature(test))]
-#[cfg(all(test, feature = "nightly"))]
+// #[cfg(all(test, feature = "nightly"))]
+#![feature(test)]
 extern crate test;
 
 extern crate chrono;
