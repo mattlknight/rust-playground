@@ -29,6 +29,12 @@ cd to newly cloned directory
 cd rust-playground/
 ```
 
+generate self-signed ssl keys, follow output of script for next steps (keys are required to run)
+
+```text
+./generate_self_signed_keys.sh
+```
+
 build and run project
 
 ```text
