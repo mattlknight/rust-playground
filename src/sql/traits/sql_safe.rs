@@ -3,24 +3,32 @@
 //! # Examples
 
 use regex::Regex;
-// use std::error;
-use std::result;
 
-use ::errors::{SqlError};
+use ::errors::SqlError;
+use ::types::SqlResult;
 
-type Result<T> = result::Result<T, SqlError>;
 
+/// Trait to determine if an item is safe to submit to a SQL server
 pub trait SqlSafe {
-    fn is_sql_safe(&self) -> Result<&Self>;
+    /// Method to check for SQL syntax within an item
+    fn is_sql_safe(&self) -> SqlResult<&Self>;
 }
 
+/// lazy_static Macro used here to create a Regex matcher, one time that lasts the
+/// life of the program. Generally a `'static` lifetime cannot call a function. `lazy_static!`
+/// allows you to evaluate the expression and then store it in a static variable.
 lazy_static! {
+    /// Regex matcher for SQL syntax, matches non alphanumeric, but ignores email
+    /// symbols[., -, _, @] and spaces
     pub static ref SQL_CHECK: Regex =
-        Regex::new(r"([^\d\w\s@\.-]+)").expect("FAULT  SQL_CHECK Regex::new()");
+        Regex::new(r"([^\d\w\s@\.-\_]+)").expect("FAULT  SQL_CHECK Regex::new()");
 }
+
+// TODO:  Figure out why I can't comment this impl in rustdoc
 
 impl SqlSafe for str {
-    fn is_sql_safe(&self) -> Result<&Self> {
+    /// Base implementation for checking for sql syntax in an `&str` string slice reference
+    fn is_sql_safe(&self) -> SqlResult<&Self> {
         if self.is_empty() {
             Err(SqlError::EmptyString)
         } else if Regex::is_match(&SQL_CHECK, self) {

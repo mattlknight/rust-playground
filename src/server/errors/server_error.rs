@@ -13,10 +13,15 @@ use std::io;
 // type Result<T> = result::Result<T, Box<error::Error>>;
 
 #[derive(Debug)]
+/// Type to define possible server errors
 pub enum ServerError {
+    /// Login error occurred, see [LoginError](/types/enum.ServerError.html)
     LoginError(LoginError),
+    /// rustc_serialize::json::decode error occurred
     DecoderError(DecoderError),
+    /// SQL error occurred, see [LoginError](/types/enum.SqlError.html)
     SqlError(SqlError),
+    /// io::Error occurred
     Io(io::Error),
 }
 

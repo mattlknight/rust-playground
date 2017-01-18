@@ -1,16 +1,13 @@
-//! This is documentation for the `mylib::sql::errors::sql_error` module.
-//!
-//! # Examples
-
 use std::error;
 use std::fmt;
-// use std::result;
 
-// type Result<T> = result::Result<T, Box<error::Error>>;
 
 #[derive(Debug, PartialEq)]
+/// Error for handling SQL specific issues
 pub enum SqlError {
+    /// SQL Syntax Error for finding SQL syntax in a string
     UnsafeCharacters(String),
+    /// SQL Error for an empty string
     EmptyString,
 }
 

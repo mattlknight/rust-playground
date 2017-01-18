@@ -12,6 +12,7 @@ lazy_static! {
     static ref ADDRESS: SocketAddrV4 = SocketAddrV4::new(*IP, *PORT);
 }
 
+/// Start an HTTPS nickel.rs server
 pub fn start_server() {
     let mut server = Nickel::new();
     let mut router: Router = Nickel::router();

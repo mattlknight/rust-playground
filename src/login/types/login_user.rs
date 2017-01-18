@@ -1,19 +1,18 @@
-// use rustc_serialize::{Decodable, Decoder};
-use std::borrow::Cow;
-use std::fmt;
-use std::result;
-// use std::error;
 use regex::Regex;
+use rustc_serialize::{Decoder, Decodable};
+use std::fmt;
 
+use ::types::{Username, Password, SqlResult};
 use ::traits::{SqlSafe, SQL_CHECK};
 use ::errors::{SqlError};
 
-pub type Username<'a> = Cow<'a, str>;
-pub type Password<'a> = Cow<'a, str>;
 
-#[derive(Debug, PartialEq, RustcDecodable, RustcEncodable)]
+#[derive(Debug, PartialEq, RustcEncodable)]
+/// A struct to hold user login credentials
 pub struct LoginUser<'a> {
+    /// username field, Username type
     pub username: Username<'a>,
+    /// username field, Password type
     pub password: Password<'a>,
 }
 
@@ -23,10 +22,8 @@ impl<'a> fmt::Display for LoginUser<'a> {
     }
 }
 
-type Result<T> = result::Result<T, SqlError>;
-
 impl<'a> SqlSafe for LoginUser<'a> {
-    fn is_sql_safe(&self) -> Result<&Self> {
+    fn is_sql_safe(&self) -> SqlResult<&Self> {
         if self.username.is_empty() || self.password.is_empty() {
             Err(SqlError::EmptyString)
         } else if Regex::is_match(&SQL_CHECK, &self.username) {
@@ -38,12 +35,12 @@ impl<'a> SqlSafe for LoginUser<'a> {
     }
 }
 
-// impl<'a> Decodable for LoginUser<'a> {
-//     fn decode<D: Decoder>(d: &'a mut D) -> Result<LoginUser<'a>, D::Error> {
-//         d.read_struct("LoginUser", 2, |d| {
-//             let username = try!(d.read_struct_field("username", 0, |d| { d.read_str() }));
-//             let password = try!(d.read_struct_field("password", 1, |d| { d.read_str() }));
-//             Ok(LoginUser{ username: username, password: password })
-//         })
-//     }
-// }
+impl<'a> Decodable for LoginUser<'a> {
+    fn decode<D: Decoder>(d: &mut D) -> Result<LoginUser<'a>, D::Error> {
+        d.read_struct("LoginUser", 2, |d| {
+            let username = try!(d.read_struct_field("username", 0, |d| { d.read_str() }));
+            let password = try!(d.read_struct_field("password", 1, |d| { d.read_str() }));
+            Ok(LoginUser{ username: From::from(username), password: From::from(password) })
+        })
+    }
+}

@@ -20,6 +20,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+/*! mybin crate exists to import the mylib library and start the server from mylib::server;
+
+# Usage
+
+This example is one method of using the mylib library. With this method, you can have a binary and
+a library in the same crate root.
+
+Your Cargo.toml "can" look something like this to support a combined crate root.
+
+```toml
+[package]
+name = "my-crate"
+version = "0.1.0"
+authors = ["Your Name <yourname@email.com>"]
+
+[dependencies]
+# Project dependencies would go here
+
+[lib]
+name = "mylib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "mybin"
+path = "src/main.rs"
+```
+
+Then you could import the mylib library and `cargo run` the program.
+
+```rust,norun
+extern crate mylib;
+
+use mylib::server::start_server;
+
+fn main() {
+    start_server();
+}
+```
+*/
+
+#![warn(missing_docs)]
 
 extern crate mylib;
 

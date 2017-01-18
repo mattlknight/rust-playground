@@ -10,11 +10,17 @@ use std::io;
 // type Result<T> = result::Result<T, Box<error::Error>>;
 
 #[derive(Debug)]
+/// Type to define possible login errors
 pub enum LoginError {
+    /// Username string is 0 len
     EmptyUsername,
+    /// Username contains invalid characters or was rejected by server
     InvalidUsername,
+    /// Password string is 0 len
     EmptyPassword,
+    /// Password contains invalid characters or was rejected by server
     InvalidPassword,
+    /// io::Error occurred while processing user login
     Io(io::Error),
 }
 

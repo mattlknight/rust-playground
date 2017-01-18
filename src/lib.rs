@@ -121,6 +121,7 @@ Error: sql syntax not allowed
 
 */
 
+#![warn(missing_docs)]
 
 // #[cfg_attr(test, feature(test))]
 #[cfg(all(test, feature = "nightly"))]

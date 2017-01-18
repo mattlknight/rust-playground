@@ -1,3 +1,7 @@
+//! This is documentation for the `mylib::server::routes` module.
+//!
+//! # Examples
+
 use hyper::status::{StatusCode};
 use nickel::{HttpRouter, Router, MediaType};
 
@@ -6,6 +10,7 @@ use ::types::{LoginUser};
 use ::server::common::{get_user, send_json_error, json_reply};
 
 
+/// Function to add a router to Nickel::Router object for handling matching HTTP requests
 pub fn add_route(router: &mut Router) {
     router.post("/api/authenticate", middleware! { |request, mut response|
         println!("POST /api/authenticate");
