@@ -20,10 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#![doc(html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
-       html_favicon_url = "https://www.rust-lang.org/favicon.ico",
-       html_root_url = "https://mattlknight.github.io/rust-playground/")]
-
 /*!
 This crate provides a library for experimenting and testing rust features on a
 rapid create/test/modify cycle. This crate will provide examples of various
@@ -121,34 +117,17 @@ Error: sql syntax not allowed
 
 */
 
+#![doc(html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png",
+       html_favicon_url = "https://www.rust-lang.org/favicon.ico",
+       html_root_url = "https://mattlknight.github.io/rust-playground/")]
 #![warn(missing_docs)]
-
-// #[cfg_attr(test, feature(test))]
-// #[cfg(all(test, feature = "nightly"))]
 #![feature(test)]
 extern crate test;
-
-extern crate chrono;
-extern crate crypto;
 extern crate hyper;
-extern crate jwt;
 #[macro_use] extern crate lazy_static;
-extern crate lettre;
-#[macro_use] extern crate log;
 #[macro_use] extern crate nickel;
-// extern crate nickel_postgres;
-extern crate plugin;
-// extern crate postgres;
-extern crate pwhash;
-// extern crate r2d2;
-// extern crate r2d2_postgres;
 extern crate regex;
 extern crate rustc_serialize;
-
-extern crate time;
-extern crate toml;
-extern crate typemap;
-extern crate url;
 
 mod sql;
 mod login;
