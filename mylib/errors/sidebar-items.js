@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["LoginError","Type to define possible login errors"],["SqlError","Error for handling SQL specific issues"]]});

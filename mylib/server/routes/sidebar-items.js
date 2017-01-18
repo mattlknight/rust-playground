@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["add_route","Function to add a router to Nickel::Router object for handling matching HTTP requests"]]});

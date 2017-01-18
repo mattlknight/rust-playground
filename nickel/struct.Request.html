@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Request` struct in crate `nickel`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Request">
+
+    <title>nickel::Request - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>nickel</a></p><script>window.sidebarCurrent = {name: 'Request', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>nickel</a>::<wbr><a class='struct' href=''>Request</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/nickel/request.rs.html#14-23' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Request&lt;'mw, 'server: 'mw, D:&nbsp;'mw&nbsp;=&nbsp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt; {
+    pub origin: <a class='struct' href='../hyper/server/request/struct.Request.html' title='hyper::server::request::Request'>HyperRequest</a>&lt;'mw, 'server&gt;,
+    pub route_result: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../nickel/router/router/struct.RouteResult.html' title='nickel::router::router::RouteResult'>RouteResult</a>&lt;'mw, D&gt;&gt;,
+    // some fields omitted
+}</pre><div class='docblock'><p>A container for all the request data.</p>
+
+<p>The lifetime <code>&#39;mw</code> represents the lifetime of various bits of
+middleware state within nickel. It can vary and get shorter.</p>
+
+<p>The lifetime <code>&#39;server</code> represents the lifetime of data internal to
+the server. It is fixed and longer than <code>&#39;mw</code>.</p>
+</div><h2 class='fields'>Fields</h2><span id='structfield.origin' class='structfield'>
+                           <span id='origin.v' class='invisible'>
+                           <code>origin: <a class='struct' href='../hyper/server/request/struct.Request.html' title='hyper::server::request::Request'>HyperRequest</a>&lt;'mw, 'server&gt;</code>
+                           </span></span><span class='stab '></span><div class='docblock'><p>the original <code>hyper::server::Request</code></p>
+</div><span id='structfield.route_result' class='structfield'>
+                           <span id='route_result.v' class='invisible'>
+                           <code>route_result: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../nickel/router/router/struct.RouteResult.html' title='nickel::router::router::RouteResult'>RouteResult</a>&lt;'mw, D&gt;&gt;</code>
+                           </span></span><span class='stab '></span><div class='docblock'><p>a <code>HashMap&lt;String, String&gt;</code> holding all params with names and values</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'mw, 'server, D&gt; <a class='struct' href='../nickel/struct.Request.html' title='nickel::Request'>Request</a>&lt;'mw, 'server, D&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nickel/request.rs.html#25-50' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from_internal' class='method'><span id='from_internal.v' class='invisible'><code>fn <a href='#method.from_internal' class='fnname'>from_internal</a>(req: <a class='struct' href='../hyper/server/request/struct.Request.html' title='hyper::server::request::Request'>HyperRequest</a>&lt;'mw, 'server&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data: &amp;'mw D)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='../nickel/struct.Request.html' title='nickel::Request'>Request</a>&lt;'mw, 'server, D&gt;</code></span></h4>
+<h4 id='method.param' class='method'><span id='param.v' class='invisible'><code>fn <a href='#method.param' class='fnname'>param</a>(&amp;self, key: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></span></h4>
+<h4 id='method.path_without_query' class='method'><span id='path_without_query.v' class='invisible'><code>fn <a href='#method.path_without_query' class='fnname'>path_without_query</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></span></h4>
+<h4 id='method.server_data' class='method'><span id='server_data.v' class='invisible'><code>fn <a href='#method.server_data' class='fnname'>server_data</a>(&amp;self) -&gt; &amp;'mw D</code></span></h4>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'mw, 'server, D&gt; <a class='trait' href='../plugin/trait.Extensible.html' title='plugin::Extensible'>Extensible</a> for <a class='struct' href='../nickel/struct.Request.html' title='nickel::Request'>Request</a>&lt;'mw, 'server, D&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nickel/request.rs.html#52-60' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.extensions' class='method'><span id='extensions.v' class='invisible'><code>fn <a href='../plugin/trait.Extensible.html#tymethod.extensions' class='fnname'>extensions</a>(&amp;self) -&gt; &amp;<a class='struct' href='../typemap/struct.TypeMap.html' title='typemap::TypeMap'>TypeMap</a></code></span></h4>
+<div class='docblock'><p>Get a reference to the type&#39;s extension storage.</p>
+</div><h4 id='method.extensions_mut' class='method'><span id='extensions_mut.v' class='invisible'><code>fn <a href='../plugin/trait.Extensible.html#tymethod.extensions_mut' class='fnname'>extensions_mut</a>(&amp;mut self) -&gt; &amp;mut <a class='struct' href='../typemap/struct.TypeMap.html' title='typemap::TypeMap'>TypeMap</a></code></span></h4>
+<div class='docblock'><p>Get a mutable reference to the type&#39;s extension storage.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;'mw, 'server, D&gt; <a class='trait' href='../plugin/trait.Pluggable.html' title='plugin::Pluggable'>Pluggable</a> for <a class='struct' href='../nickel/struct.Request.html' title='nickel::Request'>Request</a>&lt;'mw, 'server, D&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nickel/request.rs.html#62' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.get' class='method'><span id='get.v' class='invisible'><code>fn <a href='../plugin/trait.Pluggable.html#method.get' class='fnname'>get</a>&lt;P&gt;(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;P::<a class='trait' href='../typemap/trait.Key.html' title='typemap::Key'>Value</a>, P::<a class='trait' href='../plugin/trait.Plugin.html' title='plugin::Plugin'>Error</a>&gt; <span class='where'>where P: <a class='trait' href='../plugin/trait.Plugin.html' title='plugin::Plugin'>Plugin</a>&lt;Self&gt;, Self: <a class='trait' href='../plugin/trait.Extensible.html' title='plugin::Extensible'>Extensible</a>, P::<a class='trait' href='../typemap/trait.Key.html' title='typemap::Key'>Value</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>, P::<a class='trait' href='../typemap/trait.Key.html' title='typemap::Key'>Value</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/any/trait.Any.html' title='core::any::Any'>Any</a></span></code></span></h4>
+<div class='docblock'><p>Return a copy of the plugin&#39;s produced value. <a href="../plugin/trait.Pluggable.html#method.get">Read more</a></p>
+</div><h4 id='method.get_ref' class='method'><span id='get_ref.v' class='invisible'><code>fn <a href='../plugin/trait.Pluggable.html#method.get_ref' class='fnname'>get_ref</a>&lt;P&gt;(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;&amp;P::<a class='trait' href='../typemap/trait.Key.html' title='typemap::Key'>Value</a>, P::<a class='trait' href='../plugin/trait.Plugin.html' title='plugin::Plugin'>Error</a>&gt; <span class='where'>where P: <a class='trait' href='../plugin/trait.Plugin.html' title='plugin::Plugin'>Plugin</a>&lt;Self&gt;, Self: <a class='trait' href='../plugin/trait.Extensible.html' title='plugin::Extensible'>Extensible</a>, P::<a class='trait' href='../typemap/trait.Key.html' title='typemap::Key'>Value</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/any/trait.Any.html' title='core::any::Any'>Any</a></span></code></span></h4>
+<div class='docblock'><p>Return a reference to the plugin&#39;s produced value. <a href="../plugin/trait.Pluggable.html#method.get_ref">Read more</a></p>
+</div><h4 id='method.get_mut' class='method'><span id='get_mut.v' class='invisible'><code>fn <a href='../plugin/trait.Pluggable.html#method.get_mut' class='fnname'>get_mut</a>&lt;P&gt;(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;&amp;mut P::<a class='trait' href='../typemap/trait.Key.html' title='typemap::Key'>Value</a>, P::<a class='trait' href='../plugin/trait.Plugin.html' title='plugin::Plugin'>Error</a>&gt; <span class='where'>where P: <a class='trait' href='../plugin/trait.Plugin.html' title='plugin::Plugin'>Plugin</a>&lt;Self&gt;, Self: <a class='trait' href='../plugin/trait.Extensible.html' title='plugin::Extensible'>Extensible</a>, P::<a class='trait' href='../typemap/trait.Key.html' title='typemap::Key'>Value</a>: <a class='trait' href='https://doc.rust-lang.org/nightly/core/any/trait.Any.html' title='core::any::Any'>Any</a></span></code></span></h4>
+<div class='docblock'><p>Return a mutable reference to the plugin&#39;s produced value. <a href="../plugin/trait.Pluggable.html#method.get_mut">Read more</a></p>
+</div><h4 id='method.compute' class='method'><span id='compute.v' class='invisible'><code>fn <a href='../plugin/trait.Pluggable.html#method.compute' class='fnname'>compute</a>&lt;P&gt;(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;P::<a class='trait' href='../typemap/trait.Key.html' title='typemap::Key'>Value</a>, P::<a class='trait' href='../plugin/trait.Plugin.html' title='plugin::Plugin'>Error</a>&gt; <span class='where'>where P: <a class='trait' href='../plugin/trait.Plugin.html' title='plugin::Plugin'>Plugin</a>&lt;Self&gt;</span></code></span></h4>
+<div class='docblock'><p>Create and evaluate a once-off instance of a plugin.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;'mw, 'conn, D&gt; <a class='trait' href='../nickel/trait.FormBody.html' title='nickel::FormBody'>FormBody</a> for <a class='struct' href='../nickel/struct.Request.html' title='nickel::Request'>Request</a>&lt;'mw, 'conn, D&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nickel/body_parser.rs.html#71-75' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.form_body' class='method'><span id='form_body.v' class='invisible'><code>fn <a href='../nickel/trait.FormBody.html#tymethod.form_body' class='fnname'>form_body</a>(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;&amp;<a class='struct' href='../nickel/struct.Params.html' title='nickel::Params'>Params</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='enum' href='../nickel/status/enum.StatusCode.html' title='nickel::status::StatusCode'>StatusCode</a>, <a class='enum' href='../nickel/enum.BodyError.html' title='nickel::BodyError'>BodyError</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>&gt;</code></span></h4>
+<div class='docblock'><p>Extracts URL encoded data from the request body. # Examples ```{rust} #[macro_use] extern crate nickel; use nickel::{Nickel, HttpRouter, FormBody}; <a href="../nickel/trait.FormBody.html#tymethod.form_body">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;'mw, 'conn, D&gt; <a class='trait' href='../nickel/trait.JsonBody.html' title='nickel::JsonBody'>JsonBody</a> for <a class='struct' href='../nickel/struct.Request.html' title='nickel::Request'>Request</a>&lt;'mw, 'conn, D&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nickel/body_parser.rs.html#81-92' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.json_as' class='method'><span id='json_as.v' class='invisible'><code>fn <a href='../nickel/trait.JsonBody.html#tymethod.json_as' class='fnname'>json_as</a>&lt;T:&nbsp;<a class='trait' href='../rustc_serialize/serialize/trait.Decodable.html' title='rustc_serialize::serialize::Decodable'>Decodable</a>&gt;(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T, <a class='struct' href='https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html' title='std::io::error::Error'>Error</a>&gt;</code></span></h4>
+</div><h3 class='impl'><span class='in-band'><code>impl&lt;'mw, 'conn, D&gt; <a class='trait' href='../nickel/trait.QueryString.html' title='nickel::QueryString'>QueryString</a> for <a class='struct' href='../nickel/struct.Request.html' title='nickel::Request'>Request</a>&lt;'mw, 'conn, D&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nickel/query_string.rs.html#38-44' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.query' class='method'><span id='query.v' class='invisible'><code>fn <a href='../nickel/trait.QueryString.html#tymethod.query' class='fnname'>query</a>(&amp;mut self) -&gt; &amp;<a class='type' href='../nickel/type.Query.html' title='nickel::Query'>Query</a></code></span></h4>
+<div class='docblock'><p>Extracts URL encoded data from the URL query string. # Examples ```{rust} #[macro_use] extern crate nickel; use nickel::{Nickel, HttpRouter, QueryString}; <a href="../nickel/trait.QueryString.html#tymethod.query">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;'mw, 'server, D&gt; <a class='trait' href='../nickel/extensions/request/trait.Referer.html' title='nickel::extensions::request::Referer'>Referer</a> for <a class='struct' href='../nickel/struct.Request.html' title='nickel::Request'>Request</a>&lt;'mw, 'server, D&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nickel/extensions/request.rs.html#8-30' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.referer' class='method'><span id='referer.v' class='invisible'><code>fn <a href='../nickel/extensions/request/trait.Referer.html#tymethod.referer' class='fnname'>referer</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></span></h4>
+<div class='docblock'><p>Get the Request&#39;s referer header</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='attribute'>#[<span class='ident'>macro_use</span>]</span> <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>nickel</span>;
+
+<span class='kw'>use</span> <span class='ident'>nickel</span>::{<span class='ident'>Nickel</span>, <span class='ident'>HttpRouter</span>};
+<span class='kw'>use</span> <span class='ident'>nickel</span>::<span class='ident'>extensions</span>::{<span class='ident'>Referer</span>, <span class='ident'>Redirect</span>};
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>server</span> <span class='op'>=</span> <span class='ident'>Nickel</span>::<span class='ident'>new</span>();
+    <span class='ident'>server</span>.<span class='ident'>get</span>(<span class='string'>&quot;/a&quot;</span>, <span class='macro'>middleware</span><span class='macro'>!</span> { <span class='op'>|</span><span class='ident'>req</span>, <span class='ident'>res</span><span class='op'>|</span>
+        <span class='kw'>let</span> <span class='ident'>back</span> <span class='op'>=</span> <span class='ident'>req</span>.<span class='ident'>referer</span>().<span class='ident'>unwrap_or</span>(<span class='string'>&quot;http://nickel.rs&quot;</span>);
+        <span class='kw'>return</span> <span class='ident'>res</span>.<span class='ident'>redirect</span>(<span class='ident'>back</span>)
+    });
+}</pre>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "nickel";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

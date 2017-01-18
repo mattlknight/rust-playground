@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["LoginUser","A struct to hold user login credentials"]],"type":[["Password","Type to define a user's password, accepts either `&str` or `String`"],["SqlResult","Type to define a SqlError Result"],["Username","Type to define a user's username, accepts either `&str` or `String`"]]});

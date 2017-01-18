@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["JsonResponse","Struct containing response data for an API server HTTP request"]]});
